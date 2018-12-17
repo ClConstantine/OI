@@ -29,3 +29,5 @@ int main(){
 	cout<<3;
     return 0;
 }
+
+score 25
