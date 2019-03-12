@@ -2,7 +2,6 @@
 #include <cstdio>
 
 using std::cin;using std::cout;using std::cerr;using std::endl;
-
 long long N,k;
 const int MOD=1000000000+7;
 struct Mat{
