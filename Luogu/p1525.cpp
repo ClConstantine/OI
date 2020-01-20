@@ -12,65 +12,76 @@
 
 using std::cin;using std::cout;using std::cerr;using std::endl;
 
-const int nmax = 2e4,mmax = 1e5;
-int n,m,a,b,c,tot = 0,fa[nmax+10],en[nmax+10];
+const int mmax=8000;
+int n,tot = 0;
+int can[mmax + 10],s;
 
-struct node{
-	int x,y,z;
-}con[mmax + 10];
+struct node {
+	node *ls,*rs;
+	int l,r,w;
 
-bool cmp(node a,node b){
-	if(a.z > b.z) return 1;
-	return 0;
+	int dis(){
+		return r-l+1;
+	}
+}T[mmax*4+10],*root;
+
+node* create(){
+	return &T[++tot];
 }
 
-int get(int x){
-	if(x == fa[x]) return x;
-	return fa[x] = get(fa[x]);
+void pushup(node* cur){
+	cur->w = cur->ls->w + cur->rs->w; 
+}
+
+void build(node* cur,int l,int r){
+	cur -> l = l;cur -> r =r;
+
+	if(l==r){
+		cur->w = 1;
+		return ;
+	}
+	cur -> ls = create();
+	cur -> rs = create();
+	build(cur->ls,l,(l+r)/2);
+	build(cur->rs,(l+r)/2+1,r);
+	pushup(cur);
+}
+
+void ser(int x,node* cur,int po){
+	if(cur -> w == 1 && cur -> dis()==1){
+		cur->w-=1;
+		can[po] = cur->l; 
+		return ;
+	}
+
+	if(x<=cur->ls->w){
+		ser(x,cur->ls,po);
+	}
+	else ser(x-cur->ls->w,cur->rs,po);
+
+	pushup(cur);
 }
 
 int main(){
-	
+
 	std::ios::sync_with_stdio(0);
 	cin.tie(0);
 
-	cin>>n>>m;
+	cin>>n;
 
-	for(int i = 0;i < m;i++){
-		cin>>a>>b>>c;
-		con[++tot].x = a;
-		con[tot].y = b;
-		con[tot].z = c;
+	for(int i = 2;i <= n;i++){
+		cin>>can[i];
 	}
 
-	for(int i = 1;i <= n;i++){
-		fa[i] = i;
+	root = create();
+	build(root,1,n);
+
+	for(s = n;s > 0;s--){
+		ser(can[s]+1,root,s);
 	}
 
-	std::sort(con+1,con+m+1,cmp);
-
-	for(int i = 1;i <= m;i++){
-		int t1 = get(con[i].x),t2 = get(con[i].y);
-		if(t1==t2){
-			cout<<con[i].z;
-			return 0;
-		}
-
-		if(!en[con[i].x]){
-			en[con[i].x] = con[i].y;
-		}
-		else{
-			fa[get(en[con[i].x])] = t2; 
-		}
-
-		if(!en[con[i].y]){
-			en[con[i].y] = con[i].x;
-		}
-		else{
-			fa[get(en[con[i].y])] = t1;
-		}
-
+	for(int i = 1;i<=n;i++){
+		cout<<can[i]<<endl;
 	}
-	cout<<0;
 	return 0;
 }
