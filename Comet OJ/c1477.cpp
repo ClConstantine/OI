@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstring>
 
+
 using std::cin;using std::cerr;using std::cout;using std::endl;
 
 char s[1000+10];
